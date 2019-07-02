@@ -5,7 +5,6 @@
  */
 
 var app = require('../app');
-var debug = require('debug')('untitled:server');
 var http = require('http');
 const admin = require('firebase-admin');
 
@@ -24,8 +23,6 @@ let db = admin.firestore();
 
 var port = normalizePort(process.env.PORT || '3000');
 
-console.log(port);
-
 app.set('port', port);
 
 /**
@@ -35,6 +32,12 @@ app.set('port', port);
 var server = http.createServer(app);
 
 var io = require('socket.io')(server);
+
+/**
+ * Listen on provided port, on all network interfaces.
+ */
+
+server.listen(port);
 
 /**
  * Normalize a port into a number, string, or false.
