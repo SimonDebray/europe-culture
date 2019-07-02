@@ -30,8 +30,6 @@ let db = admin.firestore();
 
 var port = process.env.PORT || '3000';
 
-console.log(port);
-
 app.set('port', port);
 
 /**
