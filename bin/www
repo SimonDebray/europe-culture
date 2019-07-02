@@ -18,14 +18,6 @@ admin.initializeApp({
 
 let db = admin.firestore();
 
-let docRef = db.collection('users').doc('alovelace');
-
-let setAda = docRef.set({
-  first: 'Ada',
-  last: 'Lovelace',
-  born: 1815
-});
-
 /**
  * Get port from environment and store in Express.
  */
