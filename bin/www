@@ -10,11 +10,11 @@ const admin = require('firebase-admin');
 
 let serviceAccount;
 
-try {
-  serviceAccount = require('../serviceAccount.json');
-}
-catch (e) {
+if (process.env.GOOGLE_CREDS) {
   serviceAccount = JSON.parse(process.env.GOOGLE_CREDS);
+}
+else {
+  serviceAccount = require('../serviceAccount.json');
 }
 
 admin.initializeApp({
