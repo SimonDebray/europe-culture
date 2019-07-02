@@ -15,6 +15,8 @@ else {
 localStorage.setItem("username", username);
 localStorage.setItem("language", language);
 
+prompt("Nice");
+
 socket.on('news', function (data) {
   console.log(data);
   socket.emit('my other event', { my: 'data' });
