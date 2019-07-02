@@ -5,3 +5,15 @@ node_modules
 serviceAccount.json
 
 package-lock.json
+Supprimerait .env
+Supprimerait .idea/
+Supprimerait app.js
+Supprimerait bin/
+Supprimerait node_modules/
+Supprimerait package-lock.json
+Supprimerait package.json
+Supprimerait public/
+Supprimerait routes/
+Supprimerait serviceAccount.json
+Supprimerait views/
+Supprimerait public/images/
