@@ -99,6 +99,41 @@ io.on('connection', function (socket) {
     // If only one user trigger a game against CPU
     
   });
+
+  socket.on('game.join', (data) => {
+    // Save each user data in socket
+    socket.channel = 'game-'+id;
+
+    console.log('game', 'join', `[${socket.username}]`.bold + ' join channel with IP ' + `${socket.ip}`);
+
+    // Join the lobby
+    socket.join(socket.channel);
+
+    // On récupère le deck du user
+
+    // Main de départ
+    // On sélectionne au hasard 6 cartes du deck
+
+    // Round
+    // 5 secondes pour sélectionner la question à poser à l'adversaire
+    // 10 secondes pour répondre à la question à partir des propositions
+
+    // Score
+    // Si bonne réponse, sauvegarder le temps de réponse
+    // 1 point par bonne réponse
+
+    // Fin de la partie
+    // 7 point gagnants
+    // Si fin du deck, le joueur avec le plus de point gagne
+    // Si égalité, le joueur avec le temps de réponse le plus rapide gagne
+    // Si 0/0, défaite
+
+    // Classement général
+    // Le gagnant de la partie gagne 1 point au classement général
+
+    // Disconnect users
+    // Close channel
+  });
   
   // Handle disconnection
   socket.on('disconnect', () => {
