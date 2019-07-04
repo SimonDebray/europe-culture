@@ -1,23 +1,26 @@
 var socket = io();
 
-let username = "",
-  language = "";
+let data = {};
 
 if (localStorage.getItem("username")) {
-  username = localStorage.getItem("username");
-  language = localStorage.getItem("language");
+  data.username = localStorage.getItem("username");
+  data.language = localStorage.getItem("language");
+  
+  socket.emit('lobby.firstJoin.', data);
 }
 else {
-  username = prompt("Your name: ");
-  language = navigator.language;
+  data.username = prompt("Your name: ");
+  data.language = navigator.language;
+  
+  // Check if not european
+  // if (data.language)
+  
+  localStorage.setItem("username", data.username);
+  localStorage.setItem("language", data.language);
+  
+  socket.emit('lobby.join.', data);
 }
 
-localStorage.setItem("username", username);
-localStorage.setItem("language", language);
-
-prompt("Nice");
-
-socket.on('news', function (data) {
-  console.log(data);
-  socket.emit('my other event', { my: 'data' });
+document.getElementById("new_game").addEventListener('click', function (e) {
+  socket.emit('matchmaking.join', data);
 });

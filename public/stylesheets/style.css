@@ -6,3 +6,12 @@ body {
 a {
   color: #00B7FF;
 }
+
+.question-form {
+  display: flex;
+  flex-direction: column;
+}
+
+.hidden{
+  display: none;
+}
