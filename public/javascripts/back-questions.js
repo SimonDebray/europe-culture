@@ -36,33 +36,3 @@ document.getElementById("difficulty").addEventListener('change', function (e) {
     labels.false3.classList.remove("hidden");
   }
 });
-
-document.getElementById("new_question").addEventListener('click', function (e) {
-  let values = {};
-  
-  for (let key in inputs) {
-    values[key] = inputs[key].value;
-  }
-  
-  if (inputs.difficulty.value === "duo") {
-    values.false2 = null;
-    values.false3 = null;
-  }
-  else if (inputs.difficulty.value === "trio") {
-    values.false3 = null;
-  }
-  
-  if (e.preventDefault) e.preventDefault();
-  
-  socket.emit('question.new', values);
-  
-  for (let input in inputs) {
-    if (input === "difficulty") inputs[input].value = inputs[input].defaultSelected;
-    else inputs[input].value = ""
-  }
-});
-
-
-socket.on('question.success', function (msg) {
-  alert(msg);
-});

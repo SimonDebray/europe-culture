@@ -5,41 +5,40 @@ block content
   p Welcome to #{title}
   div(class="question-form")
     h4 Random game
-    label(for="question") Question:
-    input(type="text" name="question" id="question")
+    form(class="question-form" action="questions/new" method="post" encType="multipart/form-data")
+      label(for="question") Question:
+      input(type="text" name="question" id="question")
 
-    label(for="answer") Response:
-    input(type="text" name="answer" id="answer")
+      label(for="answer") Response:
+      input(type="text" name="answer" id="answer")
 
-    label(for="card") Card image url:
-    input(type="text" name="card" id="card")
+      label(for="card") Card image url:
+      input(type="file" name="card" id="card")
 
-    label(for="country") Country:
-    select(name="country" id="country")
-      each val, index in countries
-        option(value=index) #{val}
+      label(for="country") Country:
+      select(name="country" id="country")
+        each val, index in countries
+          option(value=index) #{val}
 
-    label(for="difficulty") Question type:
-    select(name="difficulty" id="difficulty")
-      each val, index in types
-        option(value=index) #{val}
+      label(for="difficulty") Question type:
+      select(name="difficulty" id="difficulty")
+        each val, index in types
+          option(value=index) #{val}
 
-    label(for="category") Question category:
-    select(name="category" id="category")
-      each val, index in categories
-        option(value=index) #{val}
+      label(for="category") Question category:
+      select(name="category" id="category")
+        each val, index in categories
+          option(value=index) #{val}
 
-    label(for="false1" id="l-false1") False response 1:
-    input(type="text" name="false1" id="false1")
+      label(for="false1" id="l-false1") False response 1:
+      input(type="text" name="false1" id="false1")
 
-    label(class="hidden" for="false2" id="l-false2") False response 2:
-    input(class="hidden" type="text" name="false2" id="false2")
+      label(class="hidden" for="false2" id="l-false2") False response 2:
+      input(class="hidden" type="text" name="false2" id="false2")
 
-    label(class="hidden" for="false3" id="l-false3") False response 3:
-    input(class="hidden" type="text" name="false3" id="false3")
+      label(class="hidden" for="false3" id="l-false3") False response 3:
+      input(class="hidden" type="text" name="false3" id="false3")
 
-    button(id='new_question') New question
-
-    div
+      button(id='new_question') New question
 
     script(src='/javascripts/back-questions.js' defer=true)

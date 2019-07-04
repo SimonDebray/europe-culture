@@ -146,15 +146,4 @@ io.on('connection', function (socket) {
     // Add user to disconnected user
     
   });
-  
-  // Handle disconnection
-  socket.on('question.new', (data) => {
-    
-    let addDoc = db.collection(data.country).add(
-      data
-    ).then(ref => {
-      console.log('Added document with ID: ', ref.id);
-      socket.emit("question.success", "Success");
-    });
-  });
 });
