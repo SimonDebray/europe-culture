@@ -6,7 +6,7 @@ if (localStorage.getItem("username")) {
   data.username = localStorage.getItem("username");
   data.language = localStorage.getItem("language");
   
-  socket.emit('lobby.firstJoin.', data);
+  socket.emit('lobby.join.', data);
 }
 else {
   data.username = prompt("Your name: ");
@@ -18,7 +18,7 @@ else {
   localStorage.setItem("username", data.username);
   localStorage.setItem("language", data.language);
   
-  socket.emit('lobby.join.', data);
+  socket.emit('lobby.firstJoin.', data);
 }
 
 document.getElementById("new_game").addEventListener('click', function (e) {
