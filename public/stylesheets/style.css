@@ -13,5 +13,32 @@ a {
 }
 
 .hidden{
-  display: none;
+  display: none!important;
+}
+
+#theGame{
+  background: aqua;
+  z-index: 99999;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+}
+
+.opponent{
+  background: antiquewhite;
+  width: 100%;
+  height: 150px;
+}
+
+.main{
+  background: red;
+  width: 100%;
+  height: 150px;
+}
+
+.own{
+  background: yellow;
+  width: 100%;
+  height: 150px;
 }

@@ -30,18 +30,18 @@ var io = require('socket.io')(server);
 
 server.listen(port);
 
+let matchmakingClients = [],
+  gameList = {};
+
 io.on('connection', function (socket) {
   
   // User launch the app and enter a username
   socket.on('lobby.firstJoin', (data) => {
     
     // Save each user data in socket
-    socket.ip = requestIp.getClientIp(socket.request);
     socket.username = data.username;
     socket.language = data.language;
     socket.channel = 'lobby';
-    
-    console.log('lobby', 'fistJoin', `[${socket.username}]`.bold + ' join channel with IP ' + `${socket.ip}`);
     
     // Join the lobby
     socket.join(socket.channel);
@@ -55,22 +55,15 @@ io.on('connection', function (socket) {
       level: 1,
       points: 0,
     });
-    
-    // Add new user to connected users list
-    
-    // Add new user to the lobby list
   });
   
   // User launch the app and enter a username
   socket.on('lobby.join', (data) => {
     
     // Save each user data in socket
-    socket.ip = requestIp.getClientIp(socket.request);
     socket.username = data.username;
     socket.language = data.language;
     socket.channel = 'lobby';
-    
-    console.log('lobby', 'join', `[${socket.username}]`.bold + ' join channel with IP ' + `${socket.ip}`);
     
     // Join the lobby
     socket.join(socket.channel);
@@ -85,59 +78,113 @@ io.on('connection', function (socket) {
   // User launch the app and enter a username
   socket.on('matchmaking.join', (data) => {
     
+    console.log(socket.username);
+    
     // Save each user data in socket
     socket.channel = 'matchmaking';
     
-    console.log('matchmaking', 'join', `[${socket.username}]`.bold + ' join channel with IP ' + `${socket.ip}`);
+    console.log('matchmaking', 'join', `[${socket.username}]` + ' join channel');
     
     // Join the lobby
     socket.join(socket.channel);
     
-    // Remove user to the lobby list
+    if (matchmakingClients.indexOf(socket) === -1) matchmakingClients.push(socket);
     
+    if (matchmakingClients.length > 1) {
+      let index = getRndInteger(0,matchmakingClients.length - 1);
+      
+      console.log(index);
+      
+      let opponent = matchmakingClients[index];
+      
+      if (opponent === socket) {
+        while (opponent === socket) {
+          index = getRndInteger(0, matchmakingClients.length - 1);
+          opponent = matchmakingClients[index];
+        }
+      }
+      
+      const gameId = "game-" + makeId(8);
+  
+      gameList[gameId] = {};
+      
+      // Fetch card data from firestore
+  
+      gameList[gameId][socket.username] = {
+        cards: [],
+        points: 0,
+        socket: socket
+      };
+      gameList[gameId][opponent.username] = {
+        cards: [],
+        points: 0,
+        socket: opponent
+      };
+      
+      socket.join(gameId);
+      socket.emit('game.init', {
+        cards: gameList[gameId][socket.username].cards,
+        opponentUsername: opponent.username,
+        opponentLanguage: opponent.language,
+        time: 0,
+        gameId: gameId
+      });
+      
+      opponent.join(gameId);
+      opponent.emit('game.init', {
+        cards: gameList[gameId][opponent.username].cards,
+        opponentUsername: socket.username,
+        opponentLanguage: socket.language,
+        time: 0,
+        gameId: gameId
+      });
+      
+      let indexToRemove = [matchmakingClients.indexOf(socket), matchmakingClients.indexOf(opponent)];
+      
+      for(let i = 0; i < indexToRemove.length; i++) {
+        matchmakingClients.splice(indexToRemove[i]);
+      }
+    }
     // Trigger matchmaking once at least 2 users are in the channel
     // If only one user trigger a game against CPU
-    
   });
-
-  socket.on('game.join', (data) => {
+  
+  socket.on('game.start', (data) => {
     // Save each user data in socket
-    socket.channel = 'game-'+id;
-
-    console.log('game', 'join', `[${socket.username}]`.bold + ' join channel with IP ' + `${socket.ip}`);
-
-    // Join the lobby
-    socket.join(socket.channel);
-
-    // On récupère le deck du user
-
+    console.log("Game start");
+    
     // Main de départ
     // On sélectionne au hasard 6 cartes du deck
-
+    
     // Round
     // 5 secondes pour sélectionner la question à poser à l'adversaire
     // 10 secondes pour répondre à la question à partir des propositions
-
+    
     // Score
     // Si bonne réponse, sauvegarder le temps de réponse
     // 1 point par bonne réponse
-
+    
     // Fin de la partie
     // 7 point gagnants
     // Si fin du deck, le joueur avec le plus de point gagne
     // Si égalité, le joueur avec le temps de réponse le plus rapide gagne
     // Si 0/0, défaite
-
+    
     // Classement général
     // Le gagnant de la partie gagne 1 point au classement général
-
+    
     // Disconnect users
     // Close channel
   });
   
+  socket.on('game.sendQuestion', (data) => {
+    gameList[data.gameId][data.opponentUsername].emit('game.receiveQuestion', data.card)
+  });
+  
   // Handle disconnection
   socket.on('disconnect', () => {
-    console.log('socket', 'disconnect', ('[' + socket.username + ']').bold + ' socket closed');
+    console.log("disconnect");
+    console.log(socket.username)
     
     // Remove from his current room
     
@@ -147,3 +194,17 @@ io.on('connection', function (socket) {
     
   });
 });
+
+function makeId(length) {
+  var result           = '';
+  var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  var charactersLength = characters.length;
+  for ( var i = 0; i < length; i++ ) {
+    result += characters.charAt(Math.floor(Math.random() * charactersLength));
+  }
+  return result;
+}
+
+function getRndInteger(min, max) {
+  return Math.floor(Math.random() * (max - min + 1) ) + min;
+}
