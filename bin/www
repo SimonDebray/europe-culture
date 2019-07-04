@@ -7,7 +7,6 @@
 var app = require('../app');
 var http = require('http');
 var db = require('../firebase/firestore');
-var storage = require('../firebase/storage');
 
 /**
  * Get port from environment and store in Express.
