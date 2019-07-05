@@ -113,12 +113,14 @@ io.on('connection', function (socket) {
       gameList[gameId][socket.username] = {
         cards: [],
         points: 0,
-        socket: socket
+        socket: socket,
+        round: 0
       };
       gameList[gameId][opponent.username] = {
         cards: [],
         points: 0,
-        socket: opponent
+        socket: opponent,
+        round: 0
       };
       
       socket.join(gameId);
@@ -178,7 +180,36 @@ io.on('connection', function (socket) {
   });
   
   socket.on('game.sendQuestion', (data) => {
-    gameList[data.gameId][data.opponentUsername].emit('game.receiveQuestion', data.card)
+    gameList[data.gameId][data.opponentUsername].emit('game.receiveQuestion', {question: data.card, gameId: data.gameId})
+  });
+  
+  socket.on('game.sendResponse', (data) => {
+    if (data.response === data.question.response) {
+      gameList[data.game.gameId][socket.username].points += 1;
+      
+      socket.emit('game.result', true);
+    }
+    else {
+      socket.emit('game.result', false);
+    }
+  
+    gameList[data.game.gameId][socket.username].round += 1;
+    
+    if (gameList[data.game.gameId][socket.username].round !== gameList[data.game.gameId][data.game.opponentUsername].round) {
+      socket.emit('game.ping');
+    }
+    else {
+      socket.emit('game.nextRound');
+    }
+  });
+  
+  socket.on('game.ping', (data) => {
+    if (gameList[data.gameId][socket.username].round !== gameList[data.gameId][data.opponentUsername].round) {
+      socket.emit('game.ping');
+    }
+    else {
+      socket.emit('game.nextRound');
+    }
   });
   
   // Handle disconnection
