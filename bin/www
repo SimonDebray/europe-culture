@@ -110,36 +110,70 @@ io.on('connection', function (socket) {
       
       // Fetch card data from firestore
   
-      gameList[gameId][socket.username] = {
-        cards: [],
-        points: 0,
-        socket: socket,
-        round: 0
-      };
-      gameList[gameId][opponent.username] = {
-        cards: [],
-        points: 0,
-        socket: opponent,
-        round: 0
-      };
+      let citiesRef = db.collection(socket.language);
+      let allQuestions = citiesRef.get()
+        .then(snapshot => {
+          var cards = [];
+          
+          snapshot.forEach(doc => {
+            
+            cards.push(doc.data());
+          });
+  
+          gameList[gameId][socket.username] = {
+            cards: cards,
+            points: 0,
+            socket: socket,
+            round: 0
+          };
+  
+          socket.join(gameId);
+          socket.emit('game.init', {
+            cards: gameList[gameId][socket.username].cards,
+            opponentUsername: opponent.username,
+            opponentLanguage: opponent.language,
+            time: 0,
+            gameId: gameId
+          });
+          
+        })
+        .catch(err => {
+          console.log('Error getting documents', err);
+        });
+  
+      let citiesRef2 = db.collection(opponent.language);
+      let allQuestions2 = citiesRef.get()
+        .then(snapshot => {
+          var cards2 = [];
       
-      socket.join(gameId);
-      socket.emit('game.init', {
-        cards: gameList[gameId][socket.username].cards,
-        opponentUsername: opponent.username,
-        opponentLanguage: opponent.language,
-        time: 0,
-        gameId: gameId
-      });
+          snapshot.forEach(doc => {
+        
+            cards2.push(doc.data());
+          });
+          
+          
+  
+          gameList[gameId][opponent.username] = {
+            cards: cards2,
+            points: 0,
+            socket: opponent,
+            round: 0
+          };
+          
+          opponent.join(gameId);
+          opponent.emit('game.init', {
+            cards: gameList[gameId][opponent.username].cards,
+            opponentUsername: socket.username,
+            opponentLanguage: socket.language,
+            time: 0,
+            gameId: gameId
+          });
       
-      opponent.join(gameId);
-      opponent.emit('game.init', {
-        cards: gameList[gameId][opponent.username].cards,
-        opponentUsername: socket.username,
-        opponentLanguage: socket.language,
-        time: 0,
-        gameId: gameId
-      });
+        })
+        .catch(err => {
+          console.log('Error getting documents', err);
+        });
+      
       
       let indexToRemove = [matchmakingClients.indexOf(socket), matchmakingClients.indexOf(opponent)];
       
@@ -149,34 +183,6 @@ io.on('connection', function (socket) {
     }
     // Trigger matchmaking once at least 2 users are in the channel
     // If only one user trigger a game against CPU
-  });
-  
-  socket.on('game.start', (data) => {
-    // Save each user data in socket
-    console.log("Game start");
-    
-    // Main de départ
-    // On sélectionne au hasard 6 cartes du deck
-    
-    // Round
-    // 5 secondes pour sélectionner la question à poser à l'adversaire
-    // 10 secondes pour répondre à la question à partir des propositions
-    
-    // Score
-    // Si bonne réponse, sauvegarder le temps de réponse
-    // 1 point par bonne réponse
-    
-    // Fin de la partie
-    // 7 point gagnants
-    // Si fin du deck, le joueur avec le plus de point gagne
-    // Si égalité, le joueur avec le temps de réponse le plus rapide gagne
-    // Si 0/0, défaite
-    
-    // Classement général
-    // Le gagnant de la partie gagne 1 point au classement général
-    
-    // Disconnect users
-    // Close channel
   });
   
   socket.on('game.sendQuestion', (data) => {
