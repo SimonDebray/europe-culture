@@ -151,8 +151,6 @@ io.on('connection', function (socket) {
             cards2.push(doc.data());
           });
           
-          
-  
           gameList[gameId][opponent.username] = {
             cards: cards2,
             points: 0,
@@ -186,7 +184,13 @@ io.on('connection', function (socket) {
   });
   
   socket.on('game.sendQuestion', (data) => {
-    gameList[data.gameId][data.opponentUsername].emit('game.receiveQuestion', {question: data.card, gameId: data.gameId})
+    data.card.responses = [];
+    
+    if (data.card.false1) data.card.responses.push(data.card.false1);
+    if (data.card.false2) data.card.responses.push(data.card.false2);
+    if (data.card.false3) data.card.responses.push(data.card.false3);
+    
+    gameList[data.game.gameId][data.game.opponentUsername].socket.emit('game.receiveQuestion', {question: data.card, gameId: data.game.gameId})
   });
   
   socket.on('game.sendResponse', (data) => {

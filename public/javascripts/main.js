@@ -49,9 +49,10 @@ socket.on('game.init', (data) => {
   for(var i = 0; i < data.cards.length; i++) {
     data.cards[i].id = 'card-' + i;
     if (i < 6) {
-      document.getElementById("myCards").innerHTML += "<img id='card-"+ i +"' src='"+ data.cards[i].src +"' alt=''>";
+      document.getElementById("myCards").innerHTML += "<img id='card-"+ i +"' src='"+ data.cards[i].card +"' alt=''>";
       currentCards['card-' + i] = data.cards[i];
-      document.getElementById('card-'+ i).addEventListener('click', selectCard(this));
+      console.log("ici");
+      document.getElementById('card-'+ i).addEventListener('click', selectCard);
     }
     
     allCards['card-' + i] = data.cards;
@@ -74,11 +75,14 @@ function sendQuestion() {
 }
 
 function selectCard(card) {
+  console.log(card);
+  if (!card) return;
   selectedCard = currentCards[card.id];
   document.getElementById(card.id).classList.add("selected");
 }
 
 function selectResponse(response) {
+  if (!response) return;
   selectedResponse = currentResponses[response.id];
   document.getElementById(response.id).classList.add("selected");
 }
@@ -112,9 +116,10 @@ function createCountdown(time, callback, divId) {
 socket.on('game.receiveQuestion', (data) => {
   
   console.log('New question receive');
+  console.log(data);
   currentQuestion = data.question;
   
-  document.getElementById("myQuestion").innerHTML = data.question.title;
+  document.getElementById("myQuestion").innerHTML = data.question.question;
   document.getElementById("responses").innerHTML = "";
   
   var index = getRndInteger(0, data.question.responses.length - 1);
@@ -124,14 +129,14 @@ socket.on('game.receiveQuestion', (data) => {
       document.getElementById("responses").innerHTML += "<div class='response' id='response-good'>"+ data.question.response +"</div>" ;
       currentResponses['response-good'] = data.response;
       
-      document.getElementById('response-good').addEventListener('click', selectResponse(this));
+      document.getElementById('response-good').addEventListener('click', selectResponse);
     }
     
     data.responses[i].id = 'response-' + i;
     document.getElementById("responses").innerHTML += "<div class='response' id='response-"+ i +"'>"+ data.responses[i].title +"</div>" ;
     currentResponses['response-' + i] = data.responses[i];
     
-    document.getElementById('response-'+ i).addEventListener('click', selectResponse(this));
+    document.getElementById('response-'+ i).addEventListener('click', selectResponse);
   }
   
   createCountdown(10, submitResponse, "responseTimer");
@@ -183,7 +188,7 @@ socket.on("game.nextRound", () => {
   
     var id = key[0];
   
-    document.getElementById("myCards").innerHTML += "<img id='"+ id +"' src='"+ allCards[id].src +"' alt=''>";
+    document.getElementById("myCards").innerHTML += "<img id='"+ id +"' src='"+ allCards[id].card +"' alt=''>";
   
     currentCards[id] = allCards[id];
   
