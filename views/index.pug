@@ -1,9 +1,31 @@
 extends layout
 
 block content
-  h1= title
-  p Welcome to #{title}
-  div
-    h4 Random game
-    button(type='button' id='new_game') New game
-    script(src='/javascripts/main.js' defer=true)
+  div(class="container")
+    div(id="gameLobby")
+      button(type='button' id='new_game') ALEATOIRE
+      script(src='/javascripts/main.js' defer=true)
+
+    div(class="hidden" id="theGame")
+
+      div(id="cardSelection")
+        div(class="opponent")
+          div(class="perso")
+          div(class="points")
+          div(class="cards")
+
+        div(class="own")
+          div(class="time" id="cardSelectionTimer")
+          div(class="cards")
+          div(class="points")
+          div(class="selector" id="selectCut")
+
+      div(id="responseTime")
+        div(class="card" id="myQuestion")
+        div(class="responses" id="responses")
+        div(class="timer" id="responseTimer")
+        div(class="selector" id="responseCut")
+
+    div(id="gameMatchmaking" class="hidden")
+      div(class="spinner")
+
