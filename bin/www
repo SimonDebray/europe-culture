@@ -114,9 +114,10 @@ io.on('connection', function (socket) {
       let allQuestions = citiesRef.get()
         .then(snapshot => {
           var cards = [];
-          
+          console.log("SOCKET");
+          console.log(socket.language);
           snapshot.forEach(doc => {
-            
+            console.log(doc.data());
             cards.push(doc.data());
           });
   
@@ -129,7 +130,7 @@ io.on('connection', function (socket) {
   
           socket.join(gameId);
           socket.emit('game.init', {
-            cards: gameList[gameId][socket.username].cards,
+            cards: cards,
             opponentUsername: opponent.username,
             opponentLanguage: opponent.language,
             time: 0,
@@ -142,12 +143,14 @@ io.on('connection', function (socket) {
         });
   
       let citiesRef2 = db.collection(opponent.language);
-      let allQuestions2 = citiesRef.get()
+      let allQuestions2 = citiesRef2.get()
         .then(snapshot => {
           var cards2 = [];
-      
+          console.log("OPPONENT");
+          console.log(opponent.language);
           snapshot.forEach(doc => {
         
+            console.log(doc.data());
             cards2.push(doc.data());
           });
           
@@ -160,7 +163,7 @@ io.on('connection', function (socket) {
           
           opponent.join(gameId);
           opponent.emit('game.init', {
-            cards: gameList[gameId][opponent.username].cards,
+            cards: cards2,
             opponentUsername: socket.username,
             opponentLanguage: socket.language,
             time: 0,
@@ -184,6 +187,8 @@ io.on('connection', function (socket) {
   });
   
   socket.on('game.sendQuestion', (data) => {
+    console.log("je passe ici");
+    console.log(socket.username);
     data.card.responses = [];
     
     if (data.card.false1) data.card.responses.push(data.card.false1);

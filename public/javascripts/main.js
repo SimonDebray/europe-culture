@@ -17,7 +17,7 @@ if (localStorage.getItem("username")) {
 }
 else {
   data.username = prompt("Your name: ");
-  data.language = navigator.language;
+  data.language = prompt("Country tag: ");
   
   // Check if not european
   // if (data.language)
@@ -40,6 +40,8 @@ socket.on('game.init', (data) => {
   gameData = data;
   
   console.log('Game started against ' + data.opponentUsername);
+  
+  console.log(data);
   
   document.getElementById("theGame").classList.remove("hidden");
   document.getElementById("gameMatchmaking").classList.add("hidden");
@@ -132,9 +134,9 @@ socket.on('game.receiveQuestion', (data) => {
       document.getElementById('response-good').addEventListener('click', selectResponse);
     }
     
-    data.responses[i].id = 'response-' + i;
-    document.getElementById("responses").innerHTML += "<div class='response' id='response-"+ i +"'>"+ data.responses[i].title +"</div>" ;
-    currentResponses['response-' + i] = data.responses[i];
+    var id = 'response-' + i;
+    document.getElementById("responses").innerHTML += "<div class='response' id='"+ id +"'>"+ data.question.responses[i] +"</div>" ;
+    currentResponses[id] = data.question.responses[i];
     
     document.getElementById('response-'+ i).addEventListener('click', selectResponse);
   }

@@ -40,8 +40,8 @@ router.post('/questions/new', function(req, res, next) {
   }
   
   let file = req.files.card,
-    path = '/cards/' + req.files.card.name,
-    direct = './cards/' + req.files.card.name;
+    path = 'public/images/' + req.files.card.name,
+    direct = '.public/images/' + req.files.card.name;
   
   // Use the mv() method to place the file somewhere on your server
   file.mv(direct, function(err) {
