@@ -1,10 +1,55 @@
 body {
-  padding: 50px;
+  margin: 0 auto;
+  width: 350px;
+  height: 100vh;
+  overflow: hidden;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
 
 a {
   color: #00B7FF;
+}
+
+.container {
+  height: 100%;
+  background-image: url("../assets/cover.jpeg");
+  padding: 20px;
+}
+
+#gameLobby {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+}
+
+#gameLobby #menu {
+  font-weight: bold;
+  color: #fff;
+  width: 100%;
+  font-size: 20px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
+#gameLobby #menu .fa {
+  color: orange;
+}
+
+#gameLobby .action {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#gameLobby .action #new_game {
+  padding: 8px 40px;
+  border-radius: 50px;
+  color: #fff;
+  background-image: linear-gradient(to right, yellow 0%, orange 100%);
 }
 
 .question-form {

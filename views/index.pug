@@ -1,9 +1,17 @@
 extends layout
 
 block content
+  link(rel='stylesheet', href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css")
   div(class="container")
     div(id="gameLobby")
-      button(type='button' id='new_game') ALEATOIRE
+      div(id="menu")
+        i.fa.fa-bars
+        p DEFIS
+        i.fa.fa-star
+      img(src="/assets/logo_white.png" alt="logo")
+      img(src="/assets/map.png" alt="map")
+      div(class="action")
+        button(type='button' id='new_game') ALEATOIRE
       script(src='/javascripts/main.js' defer=true)
 
     div(class="hidden" id="theGame")
